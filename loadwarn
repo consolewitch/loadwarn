@@ -1,0 +1,12 @@
+#!/usr/bin/perl -w
+my $count = `ps aux |grep "apache2 -k" -c`;
+my $date = `date`;
+$count =~ s/\r|\n//g;
+if ($count > 40) {
+        `echo "Barb load is $count children as of $date" | mail -s "[Alert] Barb apache load: $count" alert\@ecotrust.org`;
+        }
+if ($count > 90) {
+	`ps -C apache2 -o pid |xargs kill -9`;
+        `echo "Barb load exceeded maximum of 90. Apache killed. Check server immedeately" | mail -s "[Alert] Barb overloaded!" alert\@ecotrust.org`;
+}
+
